@@ -4,8 +4,8 @@
 Este sistema es una aplicación de consola desarrollada en Python para la gestión, análisis y almacenamiento de datos demográficos y geográficos de diferentes países. El sistema permite realizar operaciones ABM (Alta y Modificación), búsquedas avanzadas con coincidencias parciales, filtrados por rangos y estadísticas globales en tiempo real.
 
 ## Integrantes del Equipo
-* **Integrante 1:** [Lautaro  Nuñez]
-* **Integrante 2:** [Braian Cortez]
+* **Integrante 1:** Lautaro Nuñez
+* **Integrante 2:** Braian Cortez
 
 ## Tecnologías Utilizadas
 * **Lenguaje:** Python 3.x
@@ -14,8 +14,9 @@ Este sistema es una aplicación de consola desarrollada en Python para la gesti�
 * **Control de Versiones:** Git y GitHub
 
 ## Estructura del Repositorio
-* `integrador.py`: Archivo principal con la lógica de control, funciones y bucle de menú.
-* `paises.csv`: Base de datos de texto plano con los registros de los países.
+* `integrador.py`: Archivo de interfaz de usuario. Controla el menú interactivo, la captura de opciones y la visualización de datos en consola.
+* `funciones_paises.py`: Módulo de lógica de negocio. Contiene los algoritmos de carga/guardado en CSV, cálculos métricos y validaciones numéricas.
+* `paises.csv`: Base de datos en texto plano con los registros de los países.
 * `README.md`: Documentación de presentación del proyecto.
 
 ## Instrucciones de Uso
@@ -25,7 +26,7 @@ Este sistema es una aplicación de consola desarrollada en Python para la gesti�
    ```bash
    python integrador.py
    ```
-4. Navegar por las opciones del menú interactivo (1 al 7) ingresando los números solicitados.
+4. Navegar por las opciones del menú interactivo (1 al 8) ingresando los números solicitados.
 
 ## Enlaces del Proyecto
 * **Documentación Técnica (PDF):** [Aquí irá el enlace a su PDF en Drive o GitHub]
