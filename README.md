@@ -29,5 +29,5 @@ Este sistema es una aplicación de consola desarrollada en Python para la gesti�
 4. Navegar por las opciones del menú interactivo (1 al 8) ingresando los números solicitados.
 
 ## Enlaces del Proyecto
-* **Documentación Técnica (PDF):** [Aquí irá el enlace a su PDF en Drive o GitHub]
-* **Video Demostrativo (YouTube/Drive):** [Aquí irá el link de su video de 10-15 minutos]
+* **Documentación Técnica (PDF):** [Ver Informe Técnico](./integrador_Programacion1.pdf)
+* **Video Demostrativo (YouTube/Drive):** []
