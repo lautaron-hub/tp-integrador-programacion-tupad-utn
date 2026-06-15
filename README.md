@@ -30,4 +30,4 @@ Este sistema es una aplicación de consola desarrollada en Python para la gesti�
 
 ## Enlaces del Proyecto
 * **Documentación Técnica (PDF):** [Ver Informe Técnico](./integrador_Programacion1.pdf)
-* **Video Demostrativo (YouTube/Drive):** []
+* **Video Demostrativo (YouTube/Drive):** [https://drive.google.com/drive/folders/1LgjrK6BeoQpA_BnzROZEor3YWy2ZnsjT]

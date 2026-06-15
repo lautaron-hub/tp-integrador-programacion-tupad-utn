@@ -9,7 +9,7 @@ def remover_acentos(texto):
     Normaliza un texto convirtiéndolo a minúsculas y removiendo tildes básicas.
     Usa estructuras repetitivas tradicionales (Unidad 3).
     """
-    texto_limpio = texto.lower()
+    texto_limpio = texto.lower().strip()
     reemplazos = (
         ("á", "a"),
         ("é", "e"),
@@ -23,16 +23,16 @@ def remover_acentos(texto):
 
 
 def solicitar_entero_positivo(mensaje_input):
-    """Solicita una entrada por teclado y valida que sea un entero positivo."""
+    """Solicita una entrada por teclado y valida que sea un entero positivo con reintento."""
     while True:
         try:
             valor = int(input(mensaje_input))
             if valor < 0:
-                print("Error: El valor no puede ser un numero negativo.")
+                print("Error: El valor no puede ser un número negativo.")
                 continue
             return valor
         except ValueError:
-            print("Error: Debe ingresar un numero entero valido.")
+            print("Error: Debe ingresar un número entero válido.")
 
 
 def cargar_datos(nombre_archivo):
@@ -49,14 +49,14 @@ def cargar_datos(nombre_archivo):
                     "continente": fila["continente"].strip()
                 }
                 lista_paises.append(pais)
-        print("Datos cargados con exito.")
+        print("Datos cargados con éxito.")
         return lista_paises
     except FileNotFoundError:
-        print(f"Alerta: No se encontro el archivo '{nombre_archivo}'.")
-        print("Se iniciara con una lista vacia.")
+        print(f"Alerta: No se encontró el archivo '{nombre_archivo}'.")
+        print("Se iniciará con una lista vacia.")
         return []
     except (ValueError, KeyError):
-        print("Error: El formato del archivo CSV es invalido o esta corrupto.")
+        print("Error: El formato del archivo CSV es inválido o está corrupto.")
         return []
 
 
@@ -74,24 +74,33 @@ def guardar_datos(nombre_archivo, lista_paises):
 
 
 def agregar_pais(lista_paises):
-    """Pide los datos de un pais, valida duplicados y guarda al finalizar."""
+    """Pide los datos de un país, valida duplicados y guarda al finalizar con opción de cancelar."""
     print("\n--- AGREGAR NUEVO PAÍS ---")
+    print("Ingrese '0' en cualquier momento para cancelar y volver atrás.")
+    
     nombre = input("Ingrese el nombre del país: ").strip()
-    if not nombre:
-        print("Error: El nombre no puede estar vacío.")
+    if nombre == "0" or not nombre:
+        print("Operación cancelada. Regresando...")
         return
 
     for pais in lista_paises:
         if remover_acentos(pais["nombre"]) == remover_acentos(nombre):
-            print(f"Error: El pais '{pais['nombre']}' ya existe.")
+            print(f"Error: El país '{pais['nombre']}' ya existe.")
             return
 
     poblacion = solicitar_entero_positivo("Ingrese la población: ")
+    if poblacion == 0:
+        print("Operación cancelada. Regresando...")
+        return
+        
     superficie = solicitar_entero_positivo("Ingrese la superficie en km²: ")
+    if superficie == 0:
+        print("Operación cancelada. Regresando...")
+        return
 
     continente = input("Ingrese el continente: ").strip()
-    if not continente:
-        print("Error: El continente no puede estar vacío.")
+    if continente == "0" or not continente:
+        print("Operación cancelada. Regresando...")
         return
 
     nuevo_pais = {
@@ -101,27 +110,32 @@ def agregar_pais(lista_paises):
         "continente": continente
     }
     lista_paises.append(nuevo_pais)
-    print(f"Pais '{nombre}' agregado exitosamente en memoria.")
+    print(f"País '{nombre}' agregado exitosamente en memoria.")
     guardar_datos("paises.csv", lista_paises)
 def actualizar_pais(lista_paises):
-    """Busca un pais por su nombre y modifica sus valores numericos asociados."""
+    """Busca un país por su nombre y modifica sus valores numéricos con bucle de reintento y escape."""
     print("\n--- ACTUALIZAR DATOS DE PAÍS ---")
-    nombre_buscar = input("Ingrese el nombre a modificar: ").strip()
-    if not nombre_buscar:
-        print("Error: El nombre de búsqueda no puede estar vacío.")
-        return
+    
+    while True:
+        nombre_buscar = input("Ingrese el nombre del país a modificar (o '0' para salir): ").strip()
+        if nombre_buscar == "0":
+            print("Regresando al menú principal...")
+            return
+        if not nombre_buscar:
+            print("Error: El nombre de búsqueda no puede estar vacío.")
+            continue
 
-    pais_encontrado = None
-    for pais in lista_paises:
-        if remover_acentos(pais["nombre"]) == remover_acentos(nombre_buscar):
-            pais_encontrado = pais
+        pais_encontrado = None
+        for pais in lista_paises:
+            if remover_acentos(pais["nombre"]) == remover_acentos(nombre_buscar):
+                pais_encontrado = pais
+                break
+
+        if pais_encontrado is not None:
             break
+        print("Error: El país ingresado no se encuentra registrado. Intente de nuevo.")
 
-    if pais_encontrado is None:
-        print("Error: El país ingresado no se encuentra registrado.")
-        return
-
-    print(f"País seleccionado: {pais_encontrado['nombre']}")
+    print(f"\nPaís seleccionado: {pais_encontrado['nombre']}")
     print(f"Población actual: {pais_encontrado['poblacion']}")
     print(f"Superficie actual: {pais_encontrado['superficie']} km²")
 
@@ -130,12 +144,12 @@ def actualizar_pais(lista_paises):
 
     pais_encontrado["poblacion"] = nueva_pob
     pais_encontrado["superficie"] = nueva_sup
-    print(f"Datos de '{pais_encontrado['nombre']}' modificados con exito.")
+    print(f"Datos de '{pais_encontrado['nombre']}' modificados con éxito.")
     guardar_datos("paises.csv", lista_paises)
 
 
 def calcular_metricas(lista_paises):
-    """Procesa algoritmicamente los datos matematicos y de conteo de la lista."""
+    """Procesa algoritmicamente los datos matemáticos y unifica continentes ignorando tildes."""
     if not lista_paises:
         return None, None, 0, 0, {}
 
@@ -154,8 +168,9 @@ def calcular_metricas(lista_paises):
         if pais["poblacion"] < pais_menor_pob["poblacion"]:
             pais_menor_pob = pais
 
-        cont = pais["continente"]
-        conteo_continentes[cont] = conteo_continentes.get(cont, 0) + 1
+        # OPTIMIZACIÓN CRÍTICA: Normalizamos el continente quitando acentos antes de contarlo
+        cont_limpio = remover_acentos(pais["continente"]).capitalize()
+        conteo_continentes[cont_limpio] = conteo_continentes.get(cont_limpio, 0) + 1
 
     cantidad_paises = len(lista_paises)
     promedio_pob = total_pob / cantidad_paises
@@ -169,7 +184,7 @@ def calcular_metricas(lista_paises):
 # =====================================================================
 
 def mostrar_menu():
-    """Imprime el menu de opciones interactivas."""
+    """Imprime el menú de opciones interactivas."""
     print("\n" + "=" * 35)
     print("    SISTEMA DE GESTIÓN DE PAÍSES   ")
     print("=" * 35)
@@ -185,7 +200,7 @@ def mostrar_menu():
 
 
 def realizar_listar_todos(lista_paises):
-    """Presenta el padron completo de registros."""
+    """Presenta el padrón completo de registros."""
     print("\n--- LISTADO GENERAL DE PAÍSES ---")
     if not lista_paises:
         print("No existen países registrados en el sistema.")
@@ -199,32 +214,38 @@ def realizar_listar_todos(lista_paises):
 
 
 def realizar_busqueda(lista_paises):
-    """Filtra y muestra los registros mediante coincidencias parciales de nombre."""
+    """Filtra y muestra los registros mediante coincidencias parciales con reintento y opción de escape."""
     print("\n--- BUSCAR PAÍS ---")
-    termino = input("Ingrese el término a buscar: ").strip()
-    if not termino:
-        print("Error: El término de búsqueda no puede estar vacío.")
-        return
+    
+    while True:
+        termino = input("Ingrese el término a buscar (o '0' para regresar al menú): ").strip()
+        if termino == "0":
+            print("Regresando al menú principal...")
+            return
+        if not termino:
+            print("Error: El término de búsqueda no puede estar vacío.")
+            continue
 
-    resultados = []
-    for pais in lista_paises:
-        termino_norm = remover_acentos(termino)
-        nombre_norm = remover_acentos(pais["nombre"])
-        if termino_norm in nombre_norm:
-            resultados.append(pais)
+        resultados = []
+        for pais in lista_paises:
+            termino_norm = remover_acentos(termino)
+            nombre_norm = remover_acentos(pais["nombre"])
+            if termino_norm in nombre_norm:
+                resultados.append(pais)
 
-    if not resultados:
-        print("No se encontraron países que coincidan con la búsqueda.")
-    else:
-        print(f"\nResultados encontrados ({len(resultados)}):")
-        print(f"{'Nombre':<15} | {'Población':<12} | {'Superficie':<12} | {'Continente':<12}")
-        print("-" * 60)
-        for p in resultados:
-            print(f"{p['nombre']:<15} | {p['poblacion']:<12} | {p['superficie']:<12} | {p['continente']:<12}")
+        if resultados:
+            print(f"\nResultados encontrados ({len(resultados)}):")
+            print(f"{'Nombre':<15} | {'Población':<12} | {'Superficie':<12} | {'Continente':<12}")
+            print("-" * 60)
+            for p in resultados:
+                print(f"{p['nombre']:<15} | {p['poblacion']:<12} | {p['superficie']:<12} | {p['continente']:<12}")
+            break
+        else:
+            print("No se encontraron países que coincidan con la búsqueda. Intente nuevamente.")
 
 
 def realizar_filtrado(lista_paises):
-    """Gestiona la interfaz de filtros mediante coincidencias parciales con proteccion de errores."""
+    """Gestiona la interfaz de filtros mediante coincidencias parciales con protección de errores."""
     print("\n--- FILTRAR PAÍSES ---")
     print("1. Filtrar por Continente")
     print("2. Filtrar por Rango de Población")
@@ -273,8 +294,6 @@ def realizar_filtrado(lista_paises):
         print("-" * 60)
         for p in resultados:
             print(f"{p['nombre']:<15} | {p['poblacion']:<12} | {p['superficie']:<12} | {p['continente']:<12}")
-
-
 def realizar_ordenamiento(lista_paises):
     """Gestiona la interfaz para ordenar con bucles robustos de control."""
     print("\n--- ORDENAR PAÍSES ---")
@@ -320,7 +339,7 @@ def realizar_ordenamiento(lista_paises):
 
 
 def presentar_estadisticas(lista_paises):
-    """Muestra en la interfaz los resultados de la capa logica."""
+    """Muestra en la interfaz los resultados de la capa lógica."""
     print("\n--- ESTADÍSTICAS DEL SISTEMA ---")
     mayor, menor, prom_pob, prom_sup, conteo = calcular_metricas(lista_paises)
 
@@ -328,11 +347,11 @@ def presentar_estadisticas(lista_paises):
         print("No hay datos suficientes para procesar indicadores globales.")
         return
 
-    print(f"Pais con mayor poblacion: {mayor['nombre']} ({mayor['poblacion']} hab.)")
-    print(f"Pais con menor poblacion: {menor['nombre']} ({menor['poblacion']} hab.)")
+    print(f"País con mayor población: {mayor['nombre']} ({mayor['poblacion']} hab.)")
+    print(f"País con menor población: {menor['nombre']} ({menor['poblacion']} hab.)")
     print(f"Promedio de población global: {prom_pob:.2f} hab.")
     print(f"Promedio de superficie global: {prom_sup:.2f} km²")
-    print("\nCantidad de paises por continente:")
+    print("\nCantidad de países por continente:")
     for continente, cantidad in conteo.items():
         print(f"- {continente}: {cantidad}")
 
@@ -364,6 +383,7 @@ while continuar:
         presentar_estadisticas(datos_paises)
     elif opcion == "8":
         print("\nGracias por usar el sistema. Saliendo...")
+        print("Sistema Cerrado.")
         continuar = False
     else:
-        print("\nOpcion invalida. Por favor, ingrese un número del 1 al 8.")
+        print("\nOpción inválida. Por favor, ingrese un número del 1 al 8.")
